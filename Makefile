@@ -1,10 +1,5 @@
-NAME ?= testkube-executor-template
-BIN_DIR ?= $(HOME)/bin
-
-build:
-	go build -o $(BIN_DIR)/$(NAME) cmd/agent/main.go 
-
-.PHONY: test cover build
+.PHONY: test cover 
+NAME ?= template
 
 run: 
 	EXECUTOR_PORT=8082 go run cmd/agent/main.go
@@ -13,7 +8,7 @@ mongo-dev:
 	docker run -p 27017:27017 mongo
 
 docker-build: 
-	docker build -t kubeshop/$(NAME) -f build/agent/Dockerfile .
+	docker build -t kubeshop/$(NAME)-runner -f build/agent/Dockerfile .
 
 install-swagger-codegen-mac: 
 	brew install swagger-codegen

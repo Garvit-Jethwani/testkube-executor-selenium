@@ -9,18 +9,40 @@ import (
 
 func TestRun(t *testing.T) {
 
-	t.Run("runner should run test based on execution data", func(t *testing.T) {
-		// given
-		runner := NewRunner()
-		execution := testkube.NewQueuedExecution()
-		execution.Content = testkube.NewStringTestContent("hello I'm test content")
+	t.Run("successful result", func(t *testing.T) {
+		runner, _ := NewRunner()
+		res, err := runner.Run(testkube.Execution{
+			Content: &testkube.TestContent{
+				Uri: "https://testkube.io",
+			},
+		})
 
-		// when
-		result, err := runner.Run(*execution)
-
-		// then
 		assert.NoError(t, err)
-		assert.Equal(t, result.Status, testkube.ExecutionStatusPassed)
+		assert.Equal(t, testkube.ExecutionStatusPassed, res.Status)
+	})
+
+	t.Run("failed 404 result", func(t *testing.T) {
+		runner, _ := NewRunner()
+		res, err := runner.Run(testkube.Execution{
+			Content: &testkube.TestContent{
+				Uri: "https://testkube.io/some-non-existing-uri-blablablabl",
+			},
+		})
+
+		assert.NoError(t, err)
+		assert.Equal(t, testkube.ExecutionStatusFailed, res.Status)
+
+	})
+
+	t.Run("network connection issues returns errors", func(t *testing.T) {
+		runner, _ := NewRunner()
+		_, err := runner.Run(testkube.Execution{
+			Content: &testkube.TestContent{
+				Uri: "blabla://non-existing-uri",
+			},
+		})
+
+		assert.Error(t, err)
 	})
 
 }
