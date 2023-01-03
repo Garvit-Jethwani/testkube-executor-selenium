@@ -1,7 +1,6 @@
 package runner
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,6 +9,7 @@ import (
 	"github.com/kubeshop/testkube/pkg/api/v1/testkube"
 	"github.com/kubeshop/testkube/pkg/executor"
 	"github.com/kubeshop/testkube/pkg/executor/content"
+	"github.com/kubeshop/testkube/pkg/executor/output"
 	"github.com/kubeshop/testkube/pkg/executor/scraper"
 )
 
@@ -88,17 +88,12 @@ func (r *ExampleRunner) Run(execution testkube.Execution) (result testkube.Execu
 	if err != nil {
 		return result, err
 	}
-
-	// check that the datadir exists
-	_, err = os.Stat(r.Params.Datadir)
-	if errors.Is(err, os.ErrNotExist) {
+	path, err := r.Fetcher.Fetch(execution.Content)
+	if err != nil {
 		return result, err
 	}
-
-	runPath := filepath.Join(r.Params.Datadir, "repo", execution.Content.Repository.Path)
-	if execution.Content.Repository.Path != "" {
-		runPath = filepath.Join(r.Params.Datadir, "repo", execution.Content.Repository.Path)
-	}
+	output.PrintEvent("created content path", path)
+	testDir, _ := filepath.Split(path)
 
 	// convert executor env variables to os env variables
 	for key, value := range execution.Envs {
@@ -114,10 +109,15 @@ func (r *ExampleRunner) Run(execution testkube.Execution) (result testkube.Execu
 	// }
 	// args := []string{"--env", strings.Join(envVars, ",")}
 	// args = append(args, execution.Args...)
-	args := []string{"test", "-v"}
-	out, err := executor.Run(runPath, "go", args...)
+	args1 := []string{"install", "selenium-webdriver"}
+	out, err := executor.Run(testDir, "npm", args1...)
 	if err != nil {
-		return result, fmt.Errorf("go tests error %w\n\n%s", err, out)
+		err = fmt.Errorf("npm install error %w\n\n%s", err, out)
+	}
+	args := []string{path}
+	out, err = executor.Run(testDir, "mocha", args...)
+	if err != nil {
+		return result, fmt.Errorf("selenium execution error %w\n\n%s", err, out)
 	}
 	// out = envManager.Obfuscate(out)
 	result.Output = string(out)
@@ -155,14 +155,6 @@ func (r *ExampleRunner) Validate(execution testkube.Execution) error {
 
 	if execution.Content == nil {
 		return fmt.Errorf("can't find any content to run in execution data: %+v", execution)
-	}
-
-	if execution.Content.Repository == nil {
-		return fmt.Errorf("cypress executor handle only repository based tests, but repository is nil")
-	}
-
-	if execution.Content.Repository.Branch == "" {
-		return fmt.Errorf("can't find branch or commit in params, repo:%+v", execution.Content.Repository)
 	}
 
 	return nil

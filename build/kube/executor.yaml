@@ -1,11 +1,11 @@
 apiVersion: executor.testkube.io/v1
 kind: Executor
 metadata:
-  name: go-test-executor
+  name: selenium-test-executor
   namespace: testkube
 spec:
-  image: elithepoorboy/go-test:latest  # pass your repository and tag
+  image: elithepoorboy/selenium:check2  # pass your repository and tag
   types:
-  - go/test
+  - selenium/test
   # volume_mount_path: /var/tmp/Roost/ebsvolume/testkube-minio
   # volume_quantity: 10Gix
