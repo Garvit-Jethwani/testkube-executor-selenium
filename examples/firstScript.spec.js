@@ -8,6 +8,7 @@ suite(function (env) {
     before(async function () {
       driver = await new Builder()
         .forBrowser('chrome')
+        .usingServer("http://52.53.162.4:4444/wd/hub/")
         .build();
     });
 
