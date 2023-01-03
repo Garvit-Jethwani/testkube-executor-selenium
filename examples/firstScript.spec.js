@@ -1,8 +1,6 @@
 const {By, Builder} = require('selenium-webdriver');
 const {suite} = require('selenium-webdriver/testing');
 const assert = require("assert");
-require('chromedriver');
-
 suite(function (env) {
   describe('First script', function () {
     let driver;
