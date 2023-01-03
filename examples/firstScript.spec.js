@@ -6,7 +6,9 @@ suite(function (env) {
     let driver;
 
     before(async function () {
-      driver = await new Builder().forBrowser('chrome').build();
+      driver = await new Builder()
+        .forBrowser('chrome')
+        .build();
     });
 
     after(async () => await driver.quit());
