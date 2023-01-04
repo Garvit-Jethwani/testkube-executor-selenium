@@ -7,10 +7,10 @@ async function example(){
  
        //To wait for browser to build and launch properly
        let driver = await new Builder().forBrowser("chrome")
-        .usingServer("http://54.177.166.220:30041/wd/hub/")
+        .usingServer("http://204.236.180.30:30041/wd/hub/")
         .build();
         //To fetch http://google.com from the browser with our code.   
-        await driver.get("http://google.com");
+        await driver.get(`${CHECK}`);
         //To send a search query by passing the value in searchString.
         await driver.findElement(By.name("q")).sendKeys(searchString,Key.RETURN);
  
