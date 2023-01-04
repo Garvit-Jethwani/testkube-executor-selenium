@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -94,13 +95,16 @@ func (r *ExampleRunner) Run(execution testkube.Execution) (result testkube.Execu
 	}
 	output.PrintEvent("created content path", path)
 	testDir, _ := filepath.Split(path)
-
+	var envString string
 	// convert executor env variables to os env variables
 	for key, value := range execution.Envs {
+		envString = envString + fmt.Sprintf("%s=%s\n", key, value)
 		if err = os.Setenv(key, value); err != nil {
 			return result, fmt.Errorf("setting env var: %w", err)
 		}
 	}
+	byteString, _ := json.Marshal(envString)
+	err = os.WriteFile(filepath.Join(testDir, ".envselenium"), byteString, 0777)
 	// envManager := secret.NewEnvManagerWithVars(execution.Variables)
 	// envManager.GetVars(execution.Variables)
 	// envVars := make([]string, 0, len(execution.Variables))
@@ -124,7 +128,7 @@ func (r *ExampleRunner) Run(execution testkube.Execution) (result testkube.Execu
 	// if err != nil {
 	// 	err = fmt.Errorf("npm install error %w\n\n%s", err, out2)
 	// }
-	args := []string{path, "-R", "json"}
+	args := []string{path, "-R", "json", "-r", ".envselenium"}
 	out, err := executor.Run(testDir, "mocha", args...)
 	if err != nil {
 		return result, fmt.Errorf("selenium execution error %w\n\n%s", err, out)
