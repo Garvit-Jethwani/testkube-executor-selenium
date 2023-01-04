@@ -9,7 +9,7 @@ async function example(){
         .usingServer("http://204.236.180.30:30041/wd/hub/")
         .build();
         //To fetch http://google.com from the browser with our code.   
-        await driver.get(`${CHECK}`);
+        await driver.get("http://google.com");
         //To send a search query by passing the value in searchString.
         await driver.findElement(By.name("q")).sendKeys(searchString,Key.RETURN);
  
