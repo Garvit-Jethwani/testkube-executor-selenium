@@ -1,7 +1,6 @@
 package runner
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -103,8 +102,9 @@ func (r *ExampleRunner) Run(execution testkube.Execution) (result testkube.Execu
 			return result, fmt.Errorf("setting env var: %w", err)
 		}
 	}
-	byteString, _ := json.Marshal(envString)
-	err = os.WriteFile(filepath.Join(testDir, ".envselenium"), byteString, 0777)
+	output.PrintEvent("checking the content ", envString)
+	// byteString, _ := json.Marshal(envString)
+	err = os.WriteFile(filepath.Join(testDir, ".envselenium"), []byte(envString), 0777)
 	// envManager := secret.NewEnvManagerWithVars(execution.Variables)
 	// envManager.GetVars(execution.Variables)
 	// envVars := make([]string, 0, len(execution.Variables))
