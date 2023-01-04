@@ -1,36 +1,26 @@
-const {By, Builder} = require('selenium-webdriver');
-const {suite} = require('selenium-webdriver/testing');
-const assert = require("assert");
-suite(function (env) {
-  describe('First script', function () {
-    let driver;
-
-    before(async function () {
-      driver = await new Builder()
-        .forBrowser('chrome')
-        .usingServer("http://52.53.162.4:4444/wd/hub/")
+const {By,Key,Builder} = require("selenium-webdriver");
+require("chromedriver");
+ 
+async function example(){
+ 
+       var searchString = "Automation testing with Selenium";
+ 
+       //To wait for browser to build and launch properly
+       let driver = await new Builder().forBrowser("chrome")
+        .usingServer("http://localhost:30041/wd/hub/")
         .build();
-    });
-
-    after(async () => await driver.quit());
-
-    it('First Selenium script', async function () {
-      await driver.get('https://www.selenium.dev/selenium/web/web-form.html');
-
-      let title = await driver.getTitle();
-      assert.equal("Web form", title);
-
-      await driver.manage().setTimeouts({implicit: 500});
-      let textBox = await driver.findElement(By.name('my-text'));
-      let submitButton = await driver.findElement(By.css('button'));
-
-      await textBox.sendKeys('Selenium');
-      await submitButton.click();
-
-      let message = await driver.findElement(By.id('message'));
-      let value = await message.getText();
-      assert.equal("Received!", value);
-    })
-  });
-});
-
+        //To fetch http://google.com from the browser with our code.   
+        await driver.get(`${PUBLIC_IP}`);
+        //To send a search query by passing the value in searchString.
+        await driver.findElement(By.name("q")).sendKeys(searchString,Key.RETURN);
+ 
+        //Verify the page title and print it
+        var title = await driver.getTitle();
+        console.log('Title is:',title);
+ 
+        //It is always a safe practice to quit the browser after execution
+        await driver.quit();
+ 
+}
+ 
+example()

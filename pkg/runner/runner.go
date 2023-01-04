@@ -110,12 +110,17 @@ func (r *ExampleRunner) Run(execution testkube.Execution) (result testkube.Execu
 	// args := []string{"--env", strings.Join(envVars, ",")}
 	// args = append(args, execution.Args...)
 	args1 := []string{"install", "selenium-webdriver"}
-	out, err := executor.Run(testDir, "npm", args1...)
+	out1, err := executor.Run(testDir, "npm", args1...)
 	if err != nil {
-		err = fmt.Errorf("npm install error %w\n\n%s", err, out)
+		err = fmt.Errorf("npm install error %w\n\n%s", err, out1)
+	}
+	args2 := []string{"install", "chromedriver"}
+	out2, err := executor.Run(testDir, "npm", args2...)
+	if err != nil {
+		err = fmt.Errorf("npm install error %w\n\n%s", err, out2)
 	}
 	args := []string{path}
-	out, err = executor.Run(testDir, "mocha", args...)
+	out, err := executor.Run(testDir, "mocha", args...)
 	if err != nil {
 		return result, fmt.Errorf("selenium execution error %w\n\n%s", err, out)
 	}

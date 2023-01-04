@@ -4,7 +4,7 @@ metadata:
   name: selenium-test-executor
   namespace: testkube
 spec:
-  image: elithepoorboy/selenium:check2  # pass your repository and tag
+  image: elithepoorboy/selenium:check3  # pass your repository and tag
   types:
   - selenium/test
   # volume_mount_path: /var/tmp/Roost/ebsvolume/testkube-minio
