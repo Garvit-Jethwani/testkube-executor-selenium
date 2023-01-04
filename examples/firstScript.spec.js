@@ -6,7 +6,7 @@ async function example(){
  
        //To wait for browser to build and launch properly
        let driver = await new Builder().forBrowser("chrome")
-        .usingServer("http://204.236.180.30:30041/wd/hub/")
+        .usingServer(`${CHECK2}`)
         .build();
         //To fetch http://google.com from the browser with our code.   
         await driver.get(`${CHECK}`);
