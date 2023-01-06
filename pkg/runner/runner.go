@@ -107,7 +107,7 @@ func (r *ExampleRunner) Run(execution testkube.Execution) (result testkube.Execu
 	for _, v := range execution.Variables {
 		envString = envString + fmt.Sprintf("%s='%s'\n", v.Name, v.Value)
 	}
-	output.PrintEvent("checking the content ", envString)
+	output.PrintEvent("variable content ", envString)
 	// byteString, _ := json.Marshal(envString)
 	err = os.WriteFile(filepath.Join(testDir, ".envselenium"), []byte(envString), 0777)
 	// envManager := secret.NewEnvManagerWithVars(execution.Variables)
